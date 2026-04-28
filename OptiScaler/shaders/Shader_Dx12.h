@@ -16,11 +16,11 @@ class Shader_Dx12
     bool _init = false;
     int _counter = 0;
 
-    ID3D12RootSignature* _rootSignature = nullptr;
-    ID3D12PipelineState* _pipelineState = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> _rootSignature;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> _pipelineState;
 
     ID3D12Device* _device = nullptr;
-    ID3D12Resource* _constantBuffer = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> _constantBuffer;
 
     std::vector<CD3DX12_DESCRIPTOR_RANGE1> _descriptorRanges;
 
@@ -56,6 +56,4 @@ class Shader_Dx12
     bool IsInit() const { return _init; }
 
     Shader_Dx12(std::string InName, ID3D12Device* InDevice);
-
-    ~Shader_Dx12();
 };

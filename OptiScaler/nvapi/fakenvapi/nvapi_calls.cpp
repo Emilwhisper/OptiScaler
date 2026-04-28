@@ -4,8 +4,6 @@
 #include <misc/IdentifyGpu.h>
 #include <NvApiDriverSettings.h>
 
-using Microsoft::WRL::ComPtr;
-
 LowLatency* LowLatencyCtx::lowlatency_ctx = nullptr;
 static auto init_mutex = std::mutex {};
 

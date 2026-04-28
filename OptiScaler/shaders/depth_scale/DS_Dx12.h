@@ -14,7 +14,7 @@ class DS_Dx12 : public Shader_Dx12
   private:
     FrameDescriptorHeap _frameHeaps[DS_NUM_OF_HEAPS];
 
-    ID3D12Resource* _buffer = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> _buffer = nullptr;
     D3D12_RESOURCE_STATES _bufferState = D3D12_RESOURCE_STATE_COMMON;
 
     uint32_t InNumThreadsX = 16;
@@ -26,10 +26,8 @@ class DS_Dx12 : public Shader_Dx12
     void SetBufferState(ID3D12GraphicsCommandList* InCommandList, D3D12_RESOURCE_STATES InState);
     bool Dispatch(ID3D12GraphicsCommandList* InCmdList, ID3D12Resource* InResource, ID3D12Resource* OutResource);
 
-    ID3D12Resource* Buffer() { return _buffer; }
+    ID3D12Resource* Buffer() { return _buffer.Get(); }
     bool CanRender() const { return _init && _buffer != nullptr; }
 
     DS_Dx12(std::string InName, ID3D12Device* InDevice);
-
-    ~DS_Dx12();
 };
