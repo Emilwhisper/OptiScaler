@@ -844,7 +844,7 @@ ffxReturnCode_t ffxDispatch_Vk(ffxContext* context, ffxDispatchDescHeader* desc)
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDesc->renderSize.width,
               dispatchDesc->renderSize.height);
 
-    State::Instance().setInputApiName = "FFX-VK";
+    State::Instance().setInputApiName = ApiUpscalerInput::FFX_VK;
 
     auto evalResult =
         NVSDK_NGX_VULKAN_EvaluateFeature((VkCommandBuffer) dispatchDesc->commandList, handle, params, nullptr);

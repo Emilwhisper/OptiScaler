@@ -66,6 +66,26 @@ enum class Upscaler
     Reset
 };
 
+enum class ApiUpscalerInput
+{
+    DLSS_DX11,
+    DLSS_DX12,
+    DLSS_VK,
+    XeSS_DX11,
+    XeSS_DX12,
+    XeSS_VK,
+    FFX_DX12,
+    FFX_VK,
+    FSR20_DX12,
+    FSR2X_DX11,
+    FSR2X_DX12,
+    FSR2X_VK,
+    FSR2_TinyTina,
+    FSR3_DX12,
+};
+
+std::string ApiUpscalerInputName(ApiUpscalerInput upscaler);
+
 std::string UpscalerDisplayName(Upscaler upscaler, API api = API::NotSelected);
 std::string UpscalerShortName(Upscaler upscaler);
 bool IsFsr(Upscaler upscaler);

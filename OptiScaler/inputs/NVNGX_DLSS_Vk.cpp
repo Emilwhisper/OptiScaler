@@ -864,6 +864,8 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_VULKAN_EvaluateFeature(VkCommandBuffer 
                                                                 NVSDK_NGX_Parameter* InParameters,
                                                                 PFN_NVSDK_NGX_ProgressCallback InCallback)
 {
+    State& state = State::Instance();
+
     if (InFeatureHandle == nullptr)
     {
         LOG_DEBUG("InFeatureHandle is null");
@@ -882,26 +884,15 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_VULKAN_EvaluateFeature(VkCommandBuffer 
 
     auto handleId = InFeatureHandle->Id;
     if (VkContexts[handleId].feature == nullptr) // prevent source api name flicker when dlssg is active
-        State::Instance().setInputApiName = State::Instance().currentInputApiName;
+        state.setInputApiName = state.currentInputApiName;
 
-    if (State::Instance().setInputApiName.length() == 0)
-    {
-        if (std::strcmp(State::Instance().currentInputApiName.c_str(), "DLSS") != 0)
-        {
-            State::Instance().AutoExposure.reset();
-            State::Instance().currentInputApiName = "DLSS";
-        }
-    }
-    else
-    {
-        if (std::strcmp(State::Instance().currentInputApiName.c_str(), State::Instance().setInputApiName.c_str()) != 0)
-        {
-            State::Instance().AutoExposure.reset();
-            State::Instance().currentInputApiName = State::Instance().setInputApiName;
-        }
-    }
+    const auto targetApiName =
+        !state.setInputApiName.has_value() ? ApiUpscalerInput::DLSS_VK : state.setInputApiName.value();
 
-    State::Instance().setInputApiName.clear();
+    if (state.currentInputApiName != targetApiName)
+        state.currentInputApiName = targetApiName;
+
+    state.setInputApiName.reset();
 
     if (handleId < DLSS_MOD_ID_OFFSET)
     {
@@ -932,17 +923,17 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_VULKAN_EvaluateFeature(VkCommandBuffer 
     IFeature_Vk* deviceContext = nullptr;
     auto contextData = &VkContexts[handleId];
 
-    if (State::Instance().changeBackend[handleId])
+    if (state.changeBackend[handleId])
     {
-        FeatureProvider_Vk::ChangeFeature(State::Instance().newBackend, vkInstance, vkPD, vkDevice, InCmdList, vkGIPA,
-                                          vkGDPA, handleId, InParameters, contextData);
+        FeatureProvider_Vk::ChangeFeature(state.newBackend, vkInstance, vkPD, vkDevice, InCmdList, vkGIPA, vkGDPA,
+                                          handleId, InParameters, contextData);
         evalCounter = 0;
 
         return NVSDK_NGX_Result_Success;
     }
 
     deviceContext = VkContexts[handleId].feature.get();
-    State::Instance().currentFeature = deviceContext;
+    state.currentFeature = deviceContext;
 
     UpscalerTimeVk::UpscaleStart(InCmdList);
 
@@ -954,8 +945,8 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_VULKAN_EvaluateFeature(VkCommandBuffer 
     if ((!upscaleResult || !deviceContext->IsInited()) &&
         Config::Instance()->VulkanUpscaler.value_or_default() != Upscaler::FSR22)
     {
-        State::Instance().newBackend = Upscaler::FSR22;
-        State::Instance().changeBackend[handleId] = true;
+        state.newBackend = Upscaler::FSR22;
+        state.changeBackend[handleId] = true;
         return NVSDK_NGX_Result_Success;
     }
 

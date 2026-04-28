@@ -4,6 +4,36 @@
 #include <misc/IdentifyGpu.h>
 #include <unordered_map>
 
+std::string ApiUpscalerInputName(ApiUpscalerInput upscaler)
+{
+    switch (upscaler)
+    {
+    case ApiUpscalerInput::DLSS_DX11:
+    case ApiUpscalerInput::DLSS_DX12:
+    case ApiUpscalerInput::DLSS_VK:
+        return "DLSS";
+    case ApiUpscalerInput::XeSS_DX11:
+    case ApiUpscalerInput::XeSS_DX12:
+    case ApiUpscalerInput::XeSS_VK:
+        return "XeSS";
+    case ApiUpscalerInput::FFX_DX12:
+    case ApiUpscalerInput::FFX_VK:
+        return "FFX";
+    case ApiUpscalerInput::FSR20_DX12:
+        return "FSR 2.0";
+    case ApiUpscalerInput::FSR2X_DX11:
+    case ApiUpscalerInput::FSR2X_DX12:
+    case ApiUpscalerInput::FSR2X_VK:
+        return "FSR 2.X";
+    case ApiUpscalerInput::FSR2_TinyTina:
+        return "FSR 2.TT";
+    case ApiUpscalerInput::FSR3_DX12:
+        return "FSR 3.0";
+    default:
+        return "????";
+    }
+}
+
 std::string UpscalerDisplayName(Upscaler upscaler, API api)
 {
     bool fsr4Capable = IdentifyGpu::getPrimaryGpu().fsr4Capable;

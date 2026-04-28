@@ -404,7 +404,7 @@ static Fsr3::FfxErrorCode ffxFsr3ContextDispatch_Dx12(Fsr3::FfxFsr3UpscalerConte
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, pDispatchDescription->renderSize.width,
               pDispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR3-DX12";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR3_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) pDispatchDescription->commandList,
                                                       handle, params, nullptr);
@@ -629,7 +629,7 @@ ffxFsr3ContextDispatch_Pattern_Dx12(Fsr3::FfxFsr3UpscalerContext* pContext,
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, pDispatchDescription->renderSize.width,
               pDispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR3-DX12";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR3_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) pDispatchDescription->commandList,
                                                       handle, params, nullptr);

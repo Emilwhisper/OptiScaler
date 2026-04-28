@@ -594,6 +594,7 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_D3D11_EvaluateFeature(ID3D11DeviceConte
         return NVSDK_NGX_Result_Fail;
     }
 
+    State& state = State::Instance();
     auto handleId = InFeatureHandle->Id;
     if (handleId < DLSS_MOD_ID_OFFSET)
     {
@@ -620,9 +621,9 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_D3D11_EvaluateFeature(ID3D11DeviceConte
     IFeature_Dx11* deviceContext = nullptr;
     auto activeContext = &Dx11Contexts[handleId];
 
-    if (State::Instance().changeBackend[handleId])
+    if (state.changeBackend[handleId])
     {
-        FeatureProvider_Dx11::ChangeFeature(State::Instance().newBackend, D3D11Device, InDevCtx, handleId, InParameters,
+        FeatureProvider_Dx11::ChangeFeature(state.newBackend, D3D11Device, InDevCtx, handleId, InParameters,
                                             activeContext);
 
         evalCounter = 0;
@@ -632,26 +633,21 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_D3D11_EvaluateFeature(ID3D11DeviceConte
 
     if (activeContext->feature == nullptr) // prevent source api name flicker when dlssg is active
     {
-        State::Instance().setInputApiName = State::Instance().currentInputApiName;
+        state.setInputApiName = state.currentInputApiName;
     }
     else
     {
         deviceContext = activeContext->feature.get();
-        State::Instance().currentFeature = deviceContext;
+        state.currentFeature = deviceContext;
     }
 
-    if (State::Instance().setInputApiName.length() == 0)
-    {
-        if (std::strcmp(State::Instance().currentInputApiName.c_str(), "DLSS") != 0)
-            State::Instance().currentInputApiName = "DLSS";
-    }
-    else
-    {
-        if (std::strcmp(State::Instance().currentInputApiName.c_str(), State::Instance().setInputApiName.c_str()) != 0)
-            State::Instance().currentInputApiName = State::Instance().setInputApiName;
-    }
+    const auto targetApiName =
+        !state.setInputApiName.has_value() ? ApiUpscalerInput::DLSS_DX11 : state.setInputApiName.value();
 
-    State::Instance().setInputApiName.clear();
+    if (state.currentInputApiName != targetApiName)
+        state.currentInputApiName = targetApiName;
+
+    state.setInputApiName.reset();
 
     if (deviceContext == nullptr)
     {
@@ -673,8 +669,8 @@ NVSDK_NGX_API NVSDK_NGX_Result NVSDK_NGX_D3D11_EvaluateFeature(ID3D11DeviceConte
         (upscaler == Upscaler::XeSS || upscaler == Upscaler::XeSS_on12 || upscaler == Upscaler::DLSS ||
          upscaler == Upscaler::FFX_on12))
     {
-        State::Instance().newBackend = Upscaler::FSR22;
-        State::Instance().changeBackend[handleId] = true;
+        state.newBackend = Upscaler::FSR22;
+        state.changeBackend[handleId] = true;
     }
 
     UpscalerTimeDx11::UpscaleEnd(InDevCtx);

@@ -683,7 +683,7 @@ ffxReturnCode_t ffxDispatch_Dx12(ffxContext* context, ffxDispatchDescHeader* des
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDesc->renderSize.width,
               dispatchDesc->renderSize.height);
 
-    State::Instance().setInputApiName = "FFX-DX12";
+    State::Instance().setInputApiName = ApiUpscalerInput::FFX_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) dispatchDesc->commandList, handle,
                                                       params, nullptr);

@@ -656,7 +656,7 @@ static Fsr212::FfxErrorCode ffxFsr2ContextDispatch_Dx12(Fsr212::FfxFsr2Context* 
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDescription->renderSize.width,
               dispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR2.X";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR2X_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) dispatchDescription->commandList,
                                                       handle, params, nullptr);
@@ -720,7 +720,7 @@ ffxFsr2ContextDispatch_Pattern_Dx12(Fsr212::FfxFsr2Context* context,
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDescription->renderSize.width,
               dispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR2.X";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR2X_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) dispatchDescription->commandList,
                                                       handle, params, nullptr);
@@ -787,7 +787,7 @@ static Fsr212::FfxErrorCode ffxFsr20ContextDispatch_Dx12(Fsr212::FfxFsr2Context*
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDescription->renderSize.width,
               dispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR2.0";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR20_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) dispatchDescription->commandList,
                                                       handle, params, nullptr);
@@ -855,7 +855,7 @@ static Fsr212::FfxErrorCode ffxFsr20ContextDispatch_Pattern_Dx12(Fsr212::FfxFsr2
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDescription->renderSize.width,
               dispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR2.0";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR20_DX12;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) dispatchDescription->commandList,
                                                       handle, params, nullptr);
@@ -919,7 +919,7 @@ static Fsr212::FfxErrorCode ffxFsr2TinyContextDispatch_Dx12(Fsr212::FfxFsr2Conte
     LOG_DEBUG("handle: {:X}, internalResolution: {}x{}", handle->Id, dispatchDescription->renderSize.width,
               dispatchDescription->renderSize.height);
 
-    State::Instance().setInputApiName = "FSR2.TT";
+    State::Instance().setInputApiName = ApiUpscalerInput::FSR2_TinyTina;
 
     auto evalResult = NVSDK_NGX_D3D12_EvaluateFeature((ID3D12GraphicsCommandList*) dispatchDescription->commandList,
                                                       handle, params, nullptr);

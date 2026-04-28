@@ -1837,7 +1837,7 @@ bool MenuCommon::RenderMenu()
             {
                 const bool usesDx12CompatLayer = usesCompatLayer(currentFeature->GetUpscalerType());
 
-                featurePart = StrFmt(" | %s -> %s %u.%u.%u%s", state.currentInputApiName.c_str(),
+                featurePart = StrFmt(" | %s -> %s %u.%u.%u%s", ApiUpscalerInputName(state.currentInputApiName).c_str(),
                                      currentFeature->ShortName().c_str(), currentFeature->Version().major,
                                      currentFeature->Version().minor, currentFeature->Version().patch,
                                      usesDx12CompatLayer ? " w/Dx12" : "");
@@ -2310,7 +2310,7 @@ bool MenuCommon::RenderMenu()
                                     currentFeature->Version().minor, currentFeature->Version().patch,
                                     usesDx12CompatLayer ? " w/Dx12" : "");
                         ImGui::SameLine(0.0f, 6.0f);
-                        ImGui::Text("| Input: %s", state.currentInputApiName.c_str());
+                        ImGui::Text("| Input: %s", ApiUpscalerInputName(state.currentInputApiName).c_str());
 
                         ImGui::SameLine(0.0f, 6.0f);
                         spoofingText = config->DxgiSpoofing.value_or_default() ? "On" : "Off";
@@ -2328,7 +2328,7 @@ bool MenuCommon::RenderMenu()
                                     currentFeature->ShortName().c_str(), currentFeature->Version().major,
                                     currentFeature->Version().minor, currentFeature->Version().patch);
                         ImGui::SameLine(0.0f, 6.0f);
-                        ImGui::Text("| Input: %s", state.currentInputApiName.c_str());
+                        ImGui::Text("| Input: %s", ApiUpscalerInputName(state.currentInputApiName).c_str());
 
                         ImGui::SameLine(0.0f, 6.0f);
                         spoofingText = config->DxgiSpoofing.value_or_default() ? "On" : "Off";
@@ -2347,7 +2347,7 @@ bool MenuCommon::RenderMenu()
                                     currentFeature->Version().minor, currentFeature->Version().patch,
                                     usesDx12CompatLayer ? " w/Dx12" : "");
                         ImGui::SameLine(0.0f, 6.0f);
-                        ImGui::Text("| Input: %s", state.currentInputApiName.c_str());
+                        ImGui::Text("| Input: %s", ApiUpscalerInputName(state.currentInputApiName).c_str());
 
                         auto vlkSpoof = config->VulkanSpoofing.value_or_default();
                         auto vlkExtSpoof = config->VulkanExtensionSpoofing.value_or_default();

@@ -274,7 +274,7 @@ xess_result_t hk_xessD3D12Execute(xess_context_handle_t hContext, ID3D12Graphics
     params->Set(NVSDK_NGX_Parameter_DLSS_Input_Bias_Current_Color_SubrectBase_Y,
                 pExecParams->inputResponsiveMaskBase.y);
 
-    State::Instance().setInputApiName = "XeSS";
+    State::Instance().setInputApiName = ApiUpscalerInput::XeSS_DX12;
 
     if (NVSDK_NGX_D3D12_EvaluateFeature(pCommandList, handle, params, nullptr) == NVSDK_NGX_Result_Success)
         return XESS_RESULT_SUCCESS;

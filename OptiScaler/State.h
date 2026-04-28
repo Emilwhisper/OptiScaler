@@ -273,8 +273,8 @@ class State
     std::vector<IUnknown*> SCbuffers;
     bool isHdrActive = false;
 
-    std::string setInputApiName;
-    std::string currentInputApiName;
+    std::optional<ApiUpscalerInput> setInputApiName;
+    ApiUpscalerInput currentInputApiName;
 
     bool isShuttingDown = false;
     std::set<PVOID> modulesToFree;

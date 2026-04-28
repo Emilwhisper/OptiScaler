@@ -882,12 +882,13 @@ static NVSDK_NGX_Result TryEvaluateOptiFeature(ID3D12GraphicsCommandList* InCmdL
     if (feature == nullptr) // Prevent source api name flicker when dlssg is active
         state.setInputApiName = state.currentInputApiName;
 
-    const std::string_view targetApiName = state.setInputApiName.empty() ? "DLSS" : state.setInputApiName.c_str();
+    const auto targetApiName =
+        !state.setInputApiName.has_value() ? ApiUpscalerInput::DLSS_DX12 : state.setInputApiName.value();
 
     if (state.currentInputApiName != targetApiName)
         state.currentInputApiName = targetApiName;
 
-    state.setInputApiName.clear();
+    state.setInputApiName.reset();
     evalCounter++;
 
     // Skip evaluation for the first N frames if configured
