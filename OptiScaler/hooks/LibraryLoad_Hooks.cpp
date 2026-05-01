@@ -289,9 +289,8 @@ HMODULE LibraryLoadHooks::LoadLibraryCheckW(std::wstring libName, LPCWSTR lpLibF
         std::filesystem::path path(libName);
         auto dllName = path.filename().string();
 
-        // Strip the path and don't hook it the dll is already loaded
-        // Hopefully something doesn't try to load two different overlay dlls with the same name
-        if (GetModuleHandleA(dllName.c_str()))
+        thread_local bool insideThisCode = false;
+        if (insideThisCode)
             return nullptr;
 
         auto module = NtdllProxy::LoadLibraryExW_Ldr(libName.c_str(), NULL, 0);
@@ -300,6 +299,8 @@ HMODULE LibraryLoadHooks::LoadLibraryCheckW(std::wstring libName, LPCWSTR lpLibF
         {
             if (DxgiProxy::Module() != nullptr)
             {
+                insideThisCode = true;
+
                 LOG_INFO("Calling CreateDxgiFactory methods for overlay!");
                 IDXGIFactory* factory = nullptr;
                 IDXGIFactory1* factory1 = nullptr;
