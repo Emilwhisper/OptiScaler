@@ -11,9 +11,8 @@ class RCAS_Vk : public Shader_Vk, public RCAS_Common
     RCAS_Vk(std::string InName, VkDevice InDevice, VkPhysicalDevice InPhysicalDevice);
     ~RCAS_Vk();
 
-    bool Dispatch(VkDevice InDevice, VkCommandBuffer InCmdList, RcasConstants InConstants, VkImageView InResourceView,
-                  VkImageView InMotionVectorsView, VkImageView OutResourceView, VkExtent2D OutExtent,
-                  VkImageView InDepthView = VK_NULL_HANDLE);
+    bool Dispatch(VkDevice InDevice, VkCommandBuffer InCmdList, RcasConstants InConstants, VkImageInfo* InResourceView,
+                  VkImageInfo* InMotionVectorsInfo, VkImageInfo* OutResourceInfo, VkImageInfo* InDepthInfo = nullptr);
 
     bool CreateBufferResource(VkDevice device, VkPhysicalDevice physicalDevice, VkBuffer* buffer,
                               VkDeviceMemory* memory, VkDeviceSize size, VkBufferUsageFlags usage,
@@ -61,11 +60,10 @@ class RCAS_Vk : public Shader_Vk, public RCAS_Common
     void UpdateDescriptorSetDA(VkCommandBuffer cmdList, int setIndex, VkImageView inputView, VkImageView motionView,
                                VkImageView depthView, VkImageView outputView);
     bool DispatchRCAS(VkDevice InDevice, VkCommandBuffer InCmdList, RcasConstants InConstants,
-                      VkImageView InResourceView, VkImageView InMotionVectorsView, VkImageView OutResourceView,
-                      VkExtent2D OutExtent);
+                      VkImageInfo* InResourceView, VkImageInfo* InMotionVectorsInfo, VkImageInfo* OutResourceInfo);
     bool DispatchDepthAdaptive(VkDevice InDevice, VkCommandBuffer InCmdList, RcasConstants InConstants,
-                               VkImageView InResourceView, VkImageView InMotionVectorsView, VkImageView OutResourceView,
-                               VkExtent2D OutExtent, VkImageView InDepthView);
+                               VkImageInfo* InResourceView, VkImageInfo* InMotionVectorsInfo,
+                               VkImageInfo* OutResourceInfo, VkImageInfo* InDepthInfo);
 
     VkImageView _intermediateImageView = VK_NULL_HANDLE;
     VkImage _intermediateImage = VK_NULL_HANDLE;

@@ -620,11 +620,21 @@ bool FSR2FeatureVk212::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter
             rcasConstants.CameraFar = params.cameraFar;
         }
 
-        VkExtent2D outExtent = { DisplayWidth(), DisplayHeight() };
+        VkImageInfo InResourceInfo {};
+        InResourceInfo.ImageView = RCAS->GetImageView();
+        InResourceInfo.Image = RCAS->GetImage();
+        // Missing the rest of the info
 
-        RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, RCAS->GetImageView(),
-                       ((NVSDK_NGX_Resource_VK*) paramVelocity)->Resource.ImageViewInfo.ImageView, finalOutputView,
-                       outExtent, ((NVSDK_NGX_Resource_VK*) paramDepth)->Resource.ImageViewInfo.ImageView);
+        VkImageInfo OutResourceInfo {};
+        OutResourceInfo.ImageView = finalOutputView;
+        OutResourceInfo.Image = finalOutputImage;
+        OutResourceInfo.Width = DisplayWidth();
+        OutResourceInfo.Height = DisplayHeight();
+        // Missing the rest of the info
+
+        RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, &InResourceInfo,
+                       (VkImageInfo*) &((NVSDK_NGX_Resource_VK*) paramVelocity)->Resource.ImageViewInfo,
+                       &OutResourceInfo, (VkImageInfo*) &((NVSDK_NGX_Resource_VK*) paramDepth)->Resource.ImageViewInfo);
     }
 
     _frameCount++;

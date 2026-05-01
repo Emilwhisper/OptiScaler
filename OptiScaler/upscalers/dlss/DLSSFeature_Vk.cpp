@@ -271,11 +271,21 @@ bool DLSSFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* I
                     rcasConstants.CameraFar = Config::Instance()->FsrCameraFar.value_or_default();
                 }
 
-                VkExtent2D outExtent = { DisplayWidth(), DisplayHeight() };
+                VkImageInfo InResourceInfo {};
+                InResourceInfo.ImageView = RCAS->GetImageView();
+                InResourceInfo.Image = RCAS->GetImage();
+                // Missing the rest of the info
 
-                RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, RCAS->GetImageView(),
-                               paramVelocity->Resource.ImageViewInfo.ImageView, finalOutputView, outExtent,
-                               paramDepth->Resource.ImageViewInfo.ImageView);
+                VkImageInfo OutResourceInfo {};
+                OutResourceInfo.ImageView = finalOutputView;
+                OutResourceInfo.Image = finalOutputImage;
+                OutResourceInfo.Width = DisplayWidth();
+                OutResourceInfo.Height = DisplayHeight();
+                // Missing the rest of the info
+
+                RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, &InResourceInfo,
+                               (VkImageInfo*) &paramVelocity->Resource.ImageViewInfo, &OutResourceInfo,
+                               (VkImageInfo*) &paramDepth->Resource.ImageViewInfo);
 
                 paramOutput->Resource.ImageViewInfo.Image = finalOutputImage;
                 paramOutput->Resource.ImageViewInfo.ImageView = finalOutputView;

@@ -211,6 +211,17 @@ bool RCAS_Dx11::DispatchRCAS(ID3D11Device* InDevice, ID3D11DeviceContext* InCont
         return false;
 
     InternalConstants constants {};
+
+    D3D11_TEXTURE2D_DESC outDesc {};
+    OutResource->GetDesc(&outDesc);
+    D3D11_TEXTURE2D_DESC mvsDesc {};
+    InMotionVectors->GetDesc(&mvsDesc);
+
+    constants.OutputWidth = (uint32_t) outDesc.Width;
+    constants.OutputHeight = outDesc.Height;
+    constants.MotionWidth = (uint32_t) mvsDesc.Width;
+    constants.MotionHeight = mvsDesc.Height;
+
     FillMotionConstants(constants, InConstants);
 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -234,9 +245,8 @@ bool RCAS_Dx11::DispatchRCAS(ID3D11Device* InDevice, ID3D11DeviceContext* InCont
     InContext->CSSetShaderResources(1, 1, &_srvMotionVectors);
     InContext->CSSetUnorderedAccessViews(0, 1, &_uavOutput, nullptr);
 
-    auto feature = State::Instance().currentFeature;
-    UINT dispatchWidth = (feature->TargetWidth() + InNumThreadsX - 1) / InNumThreadsX;
-    UINT dispatchHeight = (feature->TargetHeight() + InNumThreadsY - 1) / InNumThreadsY;
+    UINT dispatchWidth = (constants.OutputWidth + InNumThreadsX - 1) / InNumThreadsX;
+    UINT dispatchHeight = (constants.OutputHeight + InNumThreadsY - 1) / InNumThreadsY;
 
     InContext->Dispatch(dispatchWidth, dispatchHeight, 1);
 
@@ -261,6 +271,21 @@ bool RCAS_Dx11::DispatchDepthAdaptive(ID3D11Device* InDevice, ID3D11DeviceContex
         return false;
 
     InternalConstantsDA constants {};
+
+    D3D11_TEXTURE2D_DESC outDesc {};
+    OutResource->GetDesc(&outDesc);
+    D3D11_TEXTURE2D_DESC mvsDesc {};
+    InMotionVectors->GetDesc(&mvsDesc);
+    D3D11_TEXTURE2D_DESC depthDesc {};
+    InDepth->GetDesc(&depthDesc);
+
+    constants.OutputWidth = (uint32_t) outDesc.Width;
+    constants.OutputHeight = outDesc.Height;
+    constants.MotionWidth = (uint32_t) mvsDesc.Width;
+    constants.MotionHeight = mvsDesc.Height;
+    constants.DepthWidth = (uint32_t) depthDesc.Width;
+    constants.DepthHeight = depthDesc.Height;
+
     FillMotionConstants(constants, InConstants);
 
     D3D11_MAPPED_SUBRESOURCE mappedResource;

@@ -619,10 +619,29 @@ bool XeSSFeature_Vk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* 
         rcasConstants.CameraNear = Config::Instance()->FsrCameraNear.value_or_default();
         rcasConstants.CameraFar = Config::Instance()->FsrCameraFar.value_or_default();
 
-        VkExtent2D outExtent = { DisplayWidth(), DisplayHeight() };
+        VkImageInfo InResourceInfo {};
+        InResourceInfo.ImageView = RCAS->GetImageView();
+        InResourceInfo.Image = RCAS->GetImage();
+        // Missing the rest of the info
 
-        RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, RCAS->GetImageView(), params.velocityTexture.imageView,
-                       finalOutputView, outExtent, params.depthTexture.imageView);
+        VkImageInfo OutResourceInfo {};
+        OutResourceInfo.ImageView = finalOutputView;
+        OutResourceInfo.Image = finalOutputImage;
+        OutResourceInfo.Width = DisplayWidth();
+        OutResourceInfo.Height = DisplayHeight();
+        // Missing the rest of the info
+
+        VkImageInfo InDepthInfo {};
+        InDepthInfo.ImageView = params.depthTexture.imageView;
+        InDepthInfo.Image = params.depthTexture.image;
+        InDepthInfo.Width = params.depthTexture.width;
+        InDepthInfo.Height = params.depthTexture.height;
+        InDepthInfo.Format = params.depthTexture.format;
+        InDepthInfo.SubresourceRange = params.depthTexture.subresourceRange;
+
+        RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, &InResourceInfo,
+                       (VkImageInfo*) &((NVSDK_NGX_Resource_VK*) paramVelocity)->Resource.ImageViewInfo,
+                       &OutResourceInfo, &InDepthInfo);
     }
 
     _frameCount++;
