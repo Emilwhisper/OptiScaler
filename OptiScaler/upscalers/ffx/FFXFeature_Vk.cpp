@@ -259,17 +259,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
 
     params.commandList = InCmdBuffer;
 
-    void* paramColor;
-    InParameters->Get(NVSDK_NGX_Parameter_Color, &paramColor);
+    NVSDK_NGX_Resource_VK* paramColor;
+    InParameters->Get(NVSDK_NGX_Parameter_Color, (void**) &paramColor);
 
     if (paramColor)
     {
         LOG_DEBUG("Color exist..");
 
-        params.color =
-            ffxApiGetResourceVK(((NVSDK_NGX_Resource_VK*) paramColor)->Resource.ImageViewInfo.Image,
-                                ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramColor),
-                                FFX_API_RESOURCE_STATE_COMPUTE_READ);
+        params.color = ffxApiGetResourceVK(paramColor->Resource.ImageViewInfo.Image,
+                                           ffxApiGetImageResourceDescriptionVKLocal(paramColor),
+                                           FFX_API_RESOURCE_STATE_COMPUTE_READ);
     }
     else
     {
@@ -277,17 +276,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         return false;
     }
 
-    void* paramVelocity;
-    InParameters->Get(NVSDK_NGX_Parameter_MotionVectors, &paramVelocity);
+    NVSDK_NGX_Resource_VK* paramVelocity;
+    InParameters->Get(NVSDK_NGX_Parameter_MotionVectors, (void**) &paramVelocity);
 
     if (paramVelocity)
     {
         LOG_DEBUG("MotionVectors exist..");
 
-        params.motionVectors =
-            ffxApiGetResourceVK(((NVSDK_NGX_Resource_VK*) paramVelocity)->Resource.ImageViewInfo.Image,
-                                ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramVelocity),
-                                FFX_API_RESOURCE_STATE_COMPUTE_READ);
+        params.motionVectors = ffxApiGetResourceVK(paramVelocity->Resource.ImageViewInfo.Image,
+                                                   ffxApiGetImageResourceDescriptionVKLocal(paramVelocity),
+                                                   FFX_API_RESOURCE_STATE_COMPUTE_READ);
     }
     else
     {
@@ -295,17 +293,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         return false;
     }
 
-    void* paramOutput;
-    InParameters->Get(NVSDK_NGX_Parameter_Output, &paramOutput);
+    NVSDK_NGX_Resource_VK* paramOutput;
+    InParameters->Get(NVSDK_NGX_Parameter_Output, (void**) &paramOutput);
 
     if (paramOutput)
     {
         LOG_DEBUG("Output exist..");
 
-        params.output =
-            ffxApiGetResourceVK(((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.Image,
-                                ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramOutput),
-                                FFX_API_RESOURCE_STATE_UNORDERED_ACCESS);
+        params.output = ffxApiGetResourceVK(paramOutput->Resource.ImageViewInfo.Image,
+                                            ffxApiGetImageResourceDescriptionVKLocal(paramOutput),
+                                            FFX_API_RESOURCE_STATE_UNORDERED_ACCESS);
     }
     else
     {
@@ -313,17 +310,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         return false;
     }
 
-    void* paramDepth;
-    InParameters->Get(NVSDK_NGX_Parameter_Depth, &paramDepth);
+    NVSDK_NGX_Resource_VK* paramDepth;
+    InParameters->Get(NVSDK_NGX_Parameter_Depth, (void**) &paramDepth);
 
     if (paramDepth)
     {
         LOG_DEBUG("Depth exist..");
 
-        params.depth =
-            ffxApiGetResourceVK(((NVSDK_NGX_Resource_VK*) paramDepth)->Resource.ImageViewInfo.Image,
-                                ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramDepth),
-                                FFX_API_RESOURCE_STATE_COMPUTE_READ);
+        params.depth = ffxApiGetResourceVK(paramDepth->Resource.ImageViewInfo.Image,
+                                           ffxApiGetImageResourceDescriptionVKLocal(paramDepth),
+                                           FFX_API_RESOURCE_STATE_COMPUTE_READ);
     }
     else
     {
@@ -333,23 +329,22 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
             return false;
     }
 
-    void* paramExp = nullptr;
+    NVSDK_NGX_Resource_VK* paramExp = nullptr;
     if (AutoExposure())
     {
         LOG_DEBUG("AutoExposure enabled!");
     }
     else
     {
-        InParameters->Get(NVSDK_NGX_Parameter_ExposureTexture, &paramExp);
+        InParameters->Get(NVSDK_NGX_Parameter_ExposureTexture, (void**) &paramExp);
 
         if (paramExp)
         {
             LOG_DEBUG("ExposureTexture exist..");
 
-            params.exposure =
-                ffxApiGetResourceVK(((NVSDK_NGX_Resource_VK*) paramExp)->Resource.ImageViewInfo.Image,
-                                    ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramExp),
-                                    FFX_API_RESOURCE_STATE_COMPUTE_READ);
+            params.exposure = ffxApiGetResourceVK(paramExp->Resource.ImageViewInfo.Image,
+                                                  ffxApiGetImageResourceDescriptionVKLocal(paramExp),
+                                                  FFX_API_RESOURCE_STATE_COMPUTE_READ);
         }
         else
         {
@@ -360,14 +355,14 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         }
     }
 
-    void* paramTransparency = nullptr;
-    InParameters->Get("FSR.transparencyAndComposition", &paramTransparency);
+    NVSDK_NGX_Resource_VK* paramTransparency = nullptr;
+    InParameters->Get("FSR.transparencyAndComposition", (void**) &paramTransparency);
 
-    void* paramReactiveMask = nullptr;
-    InParameters->Get("FSR.reactive", &paramReactiveMask);
+    NVSDK_NGX_Resource_VK* paramReactiveMask = nullptr;
+    InParameters->Get("FSR.reactive", (void**) &paramReactiveMask);
 
-    void* paramReactiveMask2 = nullptr;
-    InParameters->Get(NVSDK_NGX_Parameter_DLSS_Input_Bias_Current_Color_Mask, &paramReactiveMask2);
+    NVSDK_NGX_Resource_VK* paramReactiveMask2 = nullptr;
+    InParameters->Get(NVSDK_NGX_Parameter_DLSS_Input_Bias_Current_Color_Mask, (void**) &paramReactiveMask2);
 
     if (!Config::Instance()->DisableReactiveMask.value_or(paramReactiveMask == nullptr &&
                                                           paramReactiveMask2 == nullptr))
@@ -376,18 +371,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         {
             LOG_DEBUG("Using FSR transparency mask..");
             params.transparencyAndComposition = ffxApiGetResourceVK(
-                ((NVSDK_NGX_Resource_VK*) paramTransparency)->Resource.ImageViewInfo.Image,
-                ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramTransparency),
-                FFX_API_RESOURCE_STATE_COMPUTE_READ);
+                paramTransparency->Resource.ImageViewInfo.Image,
+                ffxApiGetImageResourceDescriptionVKLocal(paramTransparency), FFX_API_RESOURCE_STATE_COMPUTE_READ);
         }
 
         if (paramReactiveMask != nullptr)
         {
             LOG_DEBUG("Using FSR reactive mask..");
-            params.reactive = ffxApiGetResourceVK(
-                ((NVSDK_NGX_Resource_VK*) paramReactiveMask)->Resource.ImageViewInfo.Image,
-                ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramReactiveMask),
-                FFX_API_RESOURCE_STATE_COMPUTE_READ);
+            params.reactive = ffxApiGetResourceVK(paramReactiveMask->Resource.ImageViewInfo.Image,
+                                                  ffxApiGetImageResourceDescriptionVKLocal(paramReactiveMask),
+                                                  FFX_API_RESOURCE_STATE_COMPUTE_READ);
         }
         else
         {
@@ -395,20 +388,19 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
             {
                 if (Config::Instance()->FsrUseMaskForTransparency.value_or_default())
                 {
-                    params.transparencyAndComposition = ffxApiGetResourceVK(
-                        ((NVSDK_NGX_Resource_VK*) paramReactiveMask2)->Resource.ImageViewInfo.Image,
-                        ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramReactiveMask2),
-                        FFX_API_RESOURCE_STATE_COMPUTE_READ);
+                    params.transparencyAndComposition =
+                        ffxApiGetResourceVK(paramReactiveMask2->Resource.ImageViewInfo.Image,
+                                            ffxApiGetImageResourceDescriptionVKLocal(paramReactiveMask2),
+                                            FFX_API_RESOURCE_STATE_COMPUTE_READ);
                 }
 
                 LOG_DEBUG("Bias mask exist..");
 
                 if (Config::Instance()->DlssReactiveMaskBias.value_or_default() > 0.0f)
                 {
-                    params.reactive = ffxApiGetResourceVK(
-                        ((NVSDK_NGX_Resource_VK*) paramReactiveMask2)->Resource.ImageViewInfo.Image,
-                        ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramReactiveMask2),
-                        FFX_API_RESOURCE_STATE_COMPUTE_READ);
+                    params.reactive = ffxApiGetResourceVK(paramReactiveMask2->Resource.ImageViewInfo.Image,
+                                                          ffxApiGetImageResourceDescriptionVKLocal(paramReactiveMask2),
+                                                          FFX_API_RESOURCE_STATE_COMPUTE_READ);
                 }
             }
             else
@@ -420,8 +412,8 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         }
     }
 
-    VkImageView finalOutputView = ((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.ImageView;
-    VkImage finalOutputImage = ((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.Image;
+    VkImageView finalOutputView = paramOutput->Resource.ImageViewInfo.ImageView;
+    VkImage finalOutputImage = paramOutput->Resource.ImageViewInfo.Image;
 
     _sharpness = GetSharpness(InParameters);
     float ssMulti = Config::Instance()->OutputScalingMultiplier.value_or(1.5f);
@@ -438,18 +430,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         VkImage oldImage = RCAS->GetImage();
 
         if (RCAS->CreateImageResource(
-                Device, PhysicalDevice, ((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.Width,
-                ((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.Height,
-                ((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.Format,
+                Device, PhysicalDevice, paramOutput->Resource.ImageViewInfo.Width,
+                paramOutput->Resource.ImageViewInfo.Height, paramOutput->Resource.ImageViewInfo.Format,
                 VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT))
         {
             VkImageLayout oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             if (oldImage != VK_NULL_HANDLE && oldImage == params.output.resource)
                 oldLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-            params.output = ffxApiGetResourceVK(
-                RCAS->GetImage(), ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramOutput),
-                FFX_API_RESOURCE_STATE_UNORDERED_ACCESS);
+            params.output = ffxApiGetResourceVK(RCAS->GetImage(), ffxApiGetImageResourceDescriptionVKLocal(paramOutput),
+                                                FFX_API_RESOURCE_STATE_UNORDERED_ACCESS);
 
             VkImageSubresourceRange range {};
             range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -470,18 +460,16 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
     {
         VkImage oldImage = OS->GetImage();
 
-        if (OS->CreateImageResource(Device, PhysicalDevice, TargetWidth(), TargetHeight(),
-                                    ((NVSDK_NGX_Resource_VK*) paramOutput)->Resource.ImageViewInfo.Format,
-                                    VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT |
-                                        VK_IMAGE_USAGE_TRANSFER_DST_BIT))
+        if (OS->CreateImageResource(
+                Device, PhysicalDevice, TargetWidth(), TargetHeight(), paramOutput->Resource.ImageViewInfo.Format,
+                VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT))
         {
             VkImageLayout oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             if (oldImage != VK_NULL_HANDLE && oldImage == params.output.resource)
                 oldLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-            params.output = ffxApiGetResourceVK(
-                OS->GetImage(), ffxApiGetImageResourceDescriptionVKLocal((NVSDK_NGX_Resource_VK*) paramOutput),
-                FFX_API_RESOURCE_STATE_UNORDERED_ACCESS);
+            params.output = ffxApiGetResourceVK(OS->GetImage(), ffxApiGetImageResourceDescriptionVKLocal(paramOutput),
+                                                FFX_API_RESOURCE_STATE_UNORDERED_ACCESS);
 
             VkImageSubresourceRange range {};
             range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -742,8 +730,8 @@ bool FFXFeatureVk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* In
         // Missing the rest of the info
 
         RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, &InResourceInfo,
-                       (VkImageInfo*) &((NVSDK_NGX_Resource_VK*) paramVelocity)->Resource.ImageViewInfo,
-                       &OutResourceInfo, (VkImageInfo*) &((NVSDK_NGX_Resource_VK*) paramDepth)->Resource.ImageViewInfo);
+                       (VkImageInfo*) &paramVelocity->Resource.ImageViewInfo, &OutResourceInfo,
+                       (VkImageInfo*) &paramDepth->Resource.ImageViewInfo);
     }
 
     _frameCount++;

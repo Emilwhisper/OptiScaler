@@ -640,8 +640,7 @@ bool XeSSFeature_Vk::Evaluate(VkCommandBuffer InCmdBuffer, NVSDK_NGX_Parameter* 
         InDepthInfo.SubresourceRange = params.depthTexture.subresourceRange;
 
         RCAS->Dispatch(Device, InCmdBuffer, rcasConstants, &InResourceInfo,
-                       (VkImageInfo*) &((NVSDK_NGX_Resource_VK*) paramVelocity)->Resource.ImageViewInfo,
-                       &OutResourceInfo, &InDepthInfo);
+                       (VkImageInfo*) &paramVelocity->Resource.ImageViewInfo, &OutResourceInfo, &InDepthInfo);
     }
 
     _frameCount++;
