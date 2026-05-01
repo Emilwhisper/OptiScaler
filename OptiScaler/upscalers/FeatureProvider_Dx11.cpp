@@ -141,11 +141,13 @@ bool FeatureProvider_Dx11::ChangeFeature(Upscaler upscaler, ID3D11Device* device
 
             State::Instance().currentFeature = nullptr;
 
-            LOG_TRACE("sleeping before reset of current feature for 1000ms");
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            Util::DelayedDestroy(std::move(contextData->feature));
 
-            contextData->feature.reset();
-            contextData->feature = nullptr;
+            // LOG_TRACE("sleeping before reset of current feature for 1000ms");
+            // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+            // contextData->feature.reset();
+            // contextData->feature = nullptr;
         }
         else
         {
