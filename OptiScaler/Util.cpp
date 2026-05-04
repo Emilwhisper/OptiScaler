@@ -366,7 +366,8 @@ std::optional<std::filesystem::path> Util::FindFilePath(const std::filesystem::p
                                                         const std::filesystem::path& fileName)
 {
     std::filesystem::path optiPath(Config::Instance()->MainDllPath.value());
-    auto normalizedOptiPath = optiPath.lexically_normal();
+    optiPath /= L"streamline";
+    auto normalizedStreamlinePath = optiPath.lexically_normal();
 
     const bool isDlssgOutput = State::Instance().activeFgOutput == FGOutput::DLSSG ||
                                State::Instance().activeFgOutput == FGOutput::DLSSGWithNvngx;
@@ -386,7 +387,7 @@ std::optional<std::filesystem::path> Util::FindFilePath(const std::filesystem::p
         if (!entry.is_directory() && entry.path().filename() == fileName)
         {
             auto normalizedPath = entry.path().lexically_normal();
-            if (isDlssgOutput || !IsSubpath(normalizedPath, normalizedOptiPath))
+            if (isDlssgOutput || !IsSubpath(normalizedPath, normalizedStreamlinePath))
             {
                 LOG_INFO(L"{} found at {}", fileName.wstring(), entry.path().parent_path().wstring());
                 return entry.path();
@@ -414,7 +415,7 @@ std::optional<std::filesystem::path> Util::FindFilePath(const std::filesystem::p
                 if (!entry.is_directory() && entry.path().filename() == fileName)
                 {
                     auto normalizedPath = entry.path().lexically_normal();
-                    if (isDlssgOutput || !IsSubpath(normalizedPath, normalizedOptiPath))
+                    if (isDlssgOutput || !IsSubpath(normalizedPath, normalizedStreamlinePath))
                     {
                         LOG_INFO(L"{} found at {}", fileName.wstring(), entry.path().parent_path().wstring());
                         return entry.path();
